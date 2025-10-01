@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:firebase_database/firebase_database.dart';
+import 'package:quiz_app/screens/result.dart';
+
 class QuestionScreen extends StatefulWidget {
   const QuestionScreen({super.key});
 
@@ -11,6 +14,50 @@ class QuestionScreen extends StatefulWidget {
 }
 
 class _QuestionsScreenState extends State<QuestionScreen> {
+  Future? loadQuestions;
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  int questionNumber = 1;
+  String question = '';
+  String answer = '';
+  String optionA = '';
+  String optionB = '';
+  String optionC = '';
+  String optionD = '';
+  
+
+  Future<void> getQuestions() async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child(questionNumber.toString()).get();
+    if (snapshot.exists){
+      setState(() {
+        question = snapshot.child('question').value.toString();
+        answer = snapshot.child('answer').value.toString();
+        optionA = snapshot.child('a').value.toString();
+        optionB = snapshot.child('b').value.toString();
+        optionC = snapshot.child('c').value.toString();
+        optionD = snapshot.child('d').value.toString();  
+      });
+    }else{
+      print('-----Not found');
+    }
+  } 
+
+  Future<void> nextQuestion() async {
+    if (questionNumber > 6){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const ResultScreen(),));
+    }else{
+      await getQuestions();
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadQuestions = getQuestions();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +74,7 @@ class _QuestionsScreenState extends State<QuestionScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'What are the main building blocks of Flutter Ui\'s',
+                question,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.lato(
                   color: Colors.white.withValues(alpha: 0.7),
@@ -39,53 +86,69 @@ class _QuestionsScreenState extends State<QuestionScreen> {
                 height: 50,
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 5.0, left: 20, right: 20),
+                padding: const EdgeInsets.only(bottom: 5.0, left: 30, right: 30),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 40)
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    questionNumber++;
+                    await nextQuestion();
+                  },
                   child: Text(
-                    'Functions',
+                    textAlign: TextAlign.center,
+                    optionA,
                     style: GoogleFonts.lato(color: Colors.blueAccent),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 5.0, left: 20, right: 20),
+                padding: const EdgeInsets.only(bottom: 5.0, left: 30, right: 30),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 40)
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    questionNumber++;
+                    await nextQuestion();
+                  },
                   child: Text(
-                    'Functions',
+                    optionB,
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.lato(color: Colors.blueAccent),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 5.0, left: 20, right: 20),
+                padding: const EdgeInsets.only(bottom: 5.0, left: 30, right: 30),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 40)
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    questionNumber++;
+                    await nextQuestion();
+                  },
                   child: Text(
-                    'Functions',
+                    textAlign: TextAlign.center,
+                    optionC,
                     style: GoogleFonts.lato(color: Colors.blueAccent),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 5.0, left: 20, right: 20),
+                padding: const EdgeInsets.only(bottom: 5.0, left: 30, right: 30),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size(double.infinity, 40)
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    questionNumber++;
+                    await nextQuestion();
+                  },
                   child: Text(
-                    'Functions',
+                    textAlign: TextAlign.center,
+                    optionD,
                     style: GoogleFonts.lato(color: Colors.blueAccent),
                   ),
                 ),
