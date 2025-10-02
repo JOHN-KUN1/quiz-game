@@ -17,6 +17,10 @@ class QuestionScreen extends StatefulWidget {
 class _QuestionsScreenState extends State<QuestionScreen> {
   Future? loadQuestions;
   FirebaseDatabase database = FirebaseDatabase.instance;
+  final List<String> chosenAnswers = [];
+  final List<String> actualAnswers = [];
+  final List<String> questions = [];
+  int correctAnswers = 0;
   int questionNumber = 1;
   String question = '';
   String answer = '';
@@ -47,7 +51,12 @@ class _QuestionsScreenState extends State<QuestionScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const ResultScreen(),
+          builder: (context) => ResultScreen(
+            numOfCorrect: correctAnswers,
+            userAnswers: chosenAnswers,
+            correctAnswers: actualAnswers,
+            questionsList: questions,
+          ),
         ),
       );
     } else {
@@ -57,7 +66,6 @@ class _QuestionsScreenState extends State<QuestionScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     loadQuestions = getQuestions();
   }
@@ -98,6 +106,12 @@ class _QuestionsScreenState extends State<QuestionScreen> {
                   minimumSize: const Size(double.infinity, 40),
                 ),
                 onPressed: () async {
+                  if (optionA == answer) {
+                    correctAnswers++;
+                  }
+                  questions.add(question);
+                  chosenAnswers.add(optionA);
+                  actualAnswers.add(answer);
                   questionNumber++;
                   await nextQuestion();
                 },
@@ -115,6 +129,12 @@ class _QuestionsScreenState extends State<QuestionScreen> {
                   minimumSize: const Size(double.infinity, 40),
                 ),
                 onPressed: () async {
+                  if (optionB == answer) {
+                    correctAnswers++;
+                  }
+                  questions.add(question);
+                  chosenAnswers.add(optionB);
+                  actualAnswers.add(answer);
                   questionNumber++;
                   await nextQuestion();
                 },
@@ -132,6 +152,12 @@ class _QuestionsScreenState extends State<QuestionScreen> {
                   minimumSize: const Size(double.infinity, 40),
                 ),
                 onPressed: () async {
+                  if (optionC == answer) {
+                    correctAnswers++;
+                  }
+                  questions.add(question);
+                  chosenAnswers.add(optionC);
+                  actualAnswers.add(answer);
                   questionNumber++;
                   await nextQuestion();
                 },
@@ -149,6 +175,12 @@ class _QuestionsScreenState extends State<QuestionScreen> {
                   minimumSize: const Size(double.infinity, 40),
                 ),
                 onPressed: () async {
+                  if (optionD == answer) {
+                    correctAnswers++;
+                  }
+                  questions.add(question);
+                  chosenAnswers.add(optionD);
+                  actualAnswers.add(answer);
                   questionNumber++;
                   await nextQuestion();
                 },
@@ -179,7 +211,7 @@ class _QuestionsScreenState extends State<QuestionScreen> {
               child: Center(
                 child: LoadingAnimationWidget.staggeredDotsWave(
                   color: Colors.blueAccent,
-                  size: 150,
+                  size: 100,
                 ),
               ),
             );
